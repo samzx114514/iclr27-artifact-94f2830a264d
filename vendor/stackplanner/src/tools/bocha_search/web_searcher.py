@@ -1,0 +1,110 @@
+import json
+import requests
+import aiohttp
+
+
+class WebSearcher:
+    def __init__(self, api_key: str, url: str):
+        self.api_key = api_key
+        self.url = url
+
+    def search(self, query: str, count: int = 10) -> list[dict]:
+
+        url = self.url
+
+        payload = json.dumps(
+            {
+                "query": query,
+                "freshness": "noLimit",
+                "summary": True,
+                "count": count,
+                "page": 1,
+            }
+        )
+
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+        # The host may configure a proxy for model traffic that cannot reach
+        # LangSearch. This service is independently reachable and should not
+        # inherit unrelated proxy settings.
+        session = requests.Session()
+        session.trust_env = False
+        response = session.post(url, headers=headers, data=payload)
+        response.raise_for_status()
+
+        results = self._parse_response(response.json())
+
+        return [
+            {
+                "link": result["url"],
+                "title": result.get("name"),
+                "snippet": result.get("summary"),
+            }
+            for result in results.get("webpage", [])[:count]
+        ]
+
+    async def search_async(self, query: str, count: int = 10) -> list[dict]:
+        payload = {
+            "query": query,
+            "freshness": "noLimit",
+            "summary": True,
+            "count": count,
+            "page": 1,
+        }
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json",
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.post(self.url, headers=headers, json=payload) as resp:
+                resp.raise_for_status()
+                data = await resp.json()
+                results = self._parse_response(data)
+                # return [
+                #     {
+                #         "link": result["url"],
+                #         "title": result.get("name"),
+                #         "snippet": result.get("summary"),
+                #     }
+                #     for result in results.get("webpage", [])[:count]
+                # ]
+                output = []
+                for result in results.get("webpage", [])[:count]:
+                    snippet = result.get("summary")
+
+                    if isinstance(snippet, str) and len(snippet) > 1500:
+                        snippet = snippet[:1500]
+
+                    output.append({
+                        "link": result["url"],
+                        "title": result.get("name"),
+                        "snippet": snippet,
+                    })
+
+                return output
+
+    @staticmethod
+    def _parse_response(response: dict):
+        result = {}
+        if "data" in response:
+            data = response["data"]
+            if "webPages" in data:
+                webPages = data["webPages"]
+                if "value" in webPages:
+                    result["webpage"] = [
+                        {
+                            "id": item.get("id", ""),
+                            "name": item.get("name", ""),
+                            "url": item.get("url", ""),
+                            "snippet": item.get("snippet", ""),
+                            "summary": item.get("summary", ""),
+                            "siteName": item.get("siteName", ""),
+                            "siteIcon": item.get("siteIcon", ""),
+                            "datePublished": item.get("datePublished", "")
+                            or item.get("dateLastCrawled", ""),
+                        }
+                        for item in webPages["value"]
+                    ]
+        return result

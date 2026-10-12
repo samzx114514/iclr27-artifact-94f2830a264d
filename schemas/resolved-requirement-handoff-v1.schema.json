@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://githarness.dev/schemas/resolved-requirement-handoff-v1.schema.json",
+  "title": "Resolved Requirement Handoff v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "task_id", "domain", "resolved_requirement",
+    "requirement_digest", "selected_base_version_id", "selected_base_checkpoint",
+    "target_version_id", "update_hint", "reused_version_id",
+    "exact_reuse_identity", "events", "handoff_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": "resolved-requirement-handoff-v1"},
+    "task_id": {"type": ["string", "null"]},
+    "domain": {"type": ["string", "null"]},
+    "resolved_requirement": {"type": "string", "minLength": 1},
+    "requirement_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "selected_base_version_id": {"type": ["string", "null"]},
+    "selected_base_checkpoint": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version_id", "checkpoint_id", "checkpoint_digest", "workspace_digest", "origin_state0_id"],
+          "properties": {
+            "version_id": {"type": "string"},
+            "checkpoint_id": {"type": "string"},
+            "checkpoint_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "workspace_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "origin_state0_id": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "target_version_id": {"type": "string", "minLength": 1},
+    "update_hint": {"type": "string"},
+    "reused_version_id": {"type": ["string", "null"]},
+    "exact_reuse_identity": {"type": ["string", "null"]},
+    "events": {"type": "array", "items": {"type": "object"}},
+    "handoff_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

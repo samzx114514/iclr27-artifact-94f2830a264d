@@ -1,0 +1,122 @@
+{
+  "domain": "math",
+  "evaluator_result": {
+    "correct": true,
+    "finished": true,
+    "score": 1.0,
+    "status": "correct"
+  },
+  "execution": {
+    "checkpoint_binding": {
+      "checkpoint_digest": "84b46c57e3f4ffdeca4eb384e897e105b65d5c45ba49516e31a2d9d72df3a88c",
+      "checkpoint_id": "checkpoint-v0",
+      "origin_state0_id": "state0-v0",
+      "parent_checkpoint_id": null,
+      "state0_id": "state0-v0",
+      "workspace_digest": "73e9c800de98f24225c7492152cc9da26d3efe2361fed9595c75dd4f074fc416"
+    },
+    "final_response": "Expression: `2 + 3`\n\nFinal answer: \\boxed{5}\n",
+    "finished": true,
+    "mode": "fresh_solve",
+    "receipt": {
+      "artifact": "answer.md",
+      "bytes": 44,
+      "passed": true,
+      "workspace_digest": "73e9c800de98f24225c7492152cc9da26d3efe2361fed9595c75dd4f074fc416"
+    },
+    "state0": {
+      "artifact": "Expression: `2 + 3`\n\nFinal answer: \\boxed{5}\n",
+      "artifact_path": "answer.md",
+      "checkpoint_digest": "84b46c57e3f4ffdeca4eb384e897e105b65d5c45ba49516e31a2d9d72df3a88c",
+      "checkpoint_id": "checkpoint-v0",
+      "domain": "math",
+      "failure": null,
+      "finalization_receipt": {
+        "artifact": "answer.md",
+        "bytes": 44,
+        "passed": true,
+        "workspace_digest": "73e9c800de98f24225c7492152cc9da26d3efe2361fed9595c75dd4f074fc416"
+      },
+      "initial_workspace": {
+        "digest": "73e9c800de98f24225c7492152cc9da26d3efe2361fed9595c75dd4f074fc416",
+        "files": {
+          "answer.md": "Expression: `2 + 3`\n\nFinal answer: \\boxed{5}\n"
+        },
+        "metadata": {
+          "state0_id": "state0-v0",
+          "state0_root_plan": {
+            "kind": "deterministic_arithmetic"
+          },
+          "state0_root_work_state": {
+            "calculator": "decimal"
+          },
+          "task_id": "compat-math"
+        }
+      },
+      "public_runtime_assets": {
+        "capabilities": [
+          "calculator"
+        ]
+      },
+      "requirement_digest": "206ae3d60bd41402a4324b647589e7d66f9bb680ed4b573dcab2fa49ca45aca0",
+      "resolved_requirement": "Compute: 2 + 3",
+      "root_plan": {
+        "kind": "deterministic_arithmetic"
+      },
+      "root_trace": [
+        {
+          "expression": "2 + 3",
+          "tool": "calculate",
+          "value": "5"
+        }
+      ],
+      "root_work_state": {
+        "calculator": "decimal"
+      },
+      "schema_version": 1,
+      "state0_id": "state0-v0",
+      "task_id": "compat-math",
+      "workspace_digest": "73e9c800de98f24225c7492152cc9da26d3efe2361fed9595c75dd4f074fc416"
+    },
+    "update_result": null,
+    "version_id": "v0"
+  },
+  "export_digest": "c6e0b8ba5b33593c80d00e6d108f6214e7f3bc62ce8e35b2d29831213af62e9e",
+  "git_agent_trajectory": [
+    {
+      "events": [
+        {
+          "action": "Commit",
+          "status": "ok",
+          "step": 0
+        }
+      ],
+      "policy_role": "git_agent",
+      "segment_index": 0
+    }
+  ],
+  "handoff": {
+    "domain": "math",
+    "events": [
+      {
+        "action": "Commit",
+        "status": "ok",
+        "step": 0
+      }
+    ],
+    "exact_reuse_identity": null,
+    "handoff_digest": "6aa3e4888149af40eacfc77607e4d163201d4344e89b8d814c5725db2fdb69df",
+    "requirement_digest": "206ae3d60bd41402a4324b647589e7d66f9bb680ed4b573dcab2fa49ca45aca0",
+    "resolved_requirement": "Compute: 2 + 3",
+    "reused_version_id": null,
+    "schema_version": "resolved-requirement-handoff-v1",
+    "selected_base_checkpoint": null,
+    "selected_base_version_id": null,
+    "target_version_id": "v0",
+    "task_id": "compat-math",
+    "update_hint": ""
+  },
+  "schema_version": "harness-rl-compat-v1",
+  "source_turn": 0,
+  "task_id": "compat-math"
+}

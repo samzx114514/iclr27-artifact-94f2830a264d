@@ -1,0 +1,19 @@
+task_id: example-stackplanner-research
+domain: research
+executor: stackplanner
+model: ../../configs/models/openai-compatible.yaml
+requirement_resolution:
+  max_steps: 4
+domain_runtime:
+  update_max_steps: 16
+  backend: remote_bocha
+  api_key_env: BOCHA_API_KEY
+  top_k: 8
+  timeout: 60
+  max_attempts: 3
+  stackplanner:
+    preserve_reference_labels: true
+turns:
+  - feedback: >-
+      Write a concise evidence-grounded report on how urban tree canopy can
+      affect summer heat, with inline source citations.

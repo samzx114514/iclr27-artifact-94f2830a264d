@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/githarness/evaluation-result-v1.schema.json",
+  "title": "MTAgentBench evaluation result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id", "domain", "status", "finished", "correct", "score",
+    "details"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["math", "sql", "search", "research", "code"]},
+    "status": {
+      "enum": [
+        "correct", "incorrect", "scored", "protocol_error", "infrastructure_failure",
+        "model_failure", "verifier_failure"
+      ]
+    },
+    "finished": {"type": "boolean"},
+    "correct": {"type": ["boolean", "null"]},
+    "score": {"type": ["number", "null"]},
+    "details": {"type": "object"}
+  }
+}

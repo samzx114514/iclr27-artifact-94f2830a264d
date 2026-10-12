@@ -1,0 +1,207 @@
+import os
+from pathlib import Path
+from typing import Any, Dict, get_args
+
+import httpx
+from langchain_core.language_models import BaseChatModel
+from langchain_core.rate_limiters import InMemoryRateLimiter
+from langchain_deepseek import ChatDeepSeek
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
+
+from src.config import load_yaml_config
+from src.config.agents import LLMType
+from src.llms.providers.dashscope import ChatDashscope
+import re
+
+# Cache for LLM instances
+_llm_cache: dict[LLMType, BaseChatModel] = {}
+_rate_limiter_cache: dict[tuple[str, float], InMemoryRateLimiter] = {}
+
+
+# Helper: check if base_url is an IP-based or local URL (not openai, not dashscope official)
+def is_private_or_ip_url(url):
+    # Match IP address (v4 or v6) or localhost
+    ip_pattern = re.compile(
+        r"^https?://(?:\d{1,3}\.){3}\d{1,3}|localhost|127\.0\.0\.1|\[::1\]"
+    )
+    return bool(ip_pattern.match(url))
+
+
+def _get_config_file_path() -> str:
+    """Get the path to the configuration file."""
+    override = os.getenv("STACKPLANNER_CONFIG_PATH")
+    if override:
+        return str(Path(override).expanduser().resolve())
+    return str((Path(__file__).parent.parent.parent / "conf.yaml").resolve())
+
+
+def _get_llm_type_config_keys() -> dict[str, str]:
+    """Get mapping of LLM types to their configuration keys."""
+    return {
+        "reasoning": "REASONING_MODEL",
+        "basic": "BASIC_MODEL",
+        "vision": "VISION_MODEL",
+        "code": "CODE_MODEL",
+        "report": "REPORT_MODEL",
+    }
+
+
+def _get_env_llm_conf(llm_type: str) -> Dict[str, Any]:
+    """
+    Get LLM configuration from environment variables.
+    Environment variables should follow the format: {LLM_TYPE}__{KEY}
+    e.g., BASIC_MODEL__api_key, BASIC_MODEL__base_url
+    """
+    prefix = f"{llm_type.upper()}_MODEL__"
+    conf = {}
+    for key, value in os.environ.items():
+        if key.startswith(prefix):
+            conf_key = key[len(prefix) :].lower()
+            if conf_key in {"timeout", "requests_per_minute"}:
+                conf[conf_key] = float(value)
+            elif conf_key == "max_retries":
+                conf[conf_key] = int(value)
+            else:
+                conf[conf_key] = value
+    return conf
+
+
+def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> BaseChatModel:
+    """Create LLM instance using configuration."""
+    llm_type_config_keys = _get_llm_type_config_keys()
+    config_key = llm_type_config_keys.get(llm_type)
+
+    if not config_key:
+        raise ValueError(f"Unknown LLM type: {llm_type}")
+
+    llm_conf = conf.get(config_key, {})
+    if not isinstance(llm_conf, dict):
+        raise ValueError(f"Invalid LLM configuration for {llm_type}: {llm_conf}")
+
+    # Get configuration from environment variables
+    env_conf = _get_env_llm_conf(llm_type)
+
+    # Merge configurations, with environment variables taking precedence
+    merged_conf = {**llm_conf, **env_conf}
+
+    if not merged_conf:
+        raise ValueError(f"No configuration found for LLM type: {llm_type}")
+
+    # Add max_retries to handle rate limit errors
+    if "max_retries" not in merged_conf:
+        merged_conf["max_retries"] = 3
+
+    # Handle SSL verification settings
+    verify_ssl = merged_conf.pop("verify_ssl", True)
+
+    # Create custom HTTP client if SSL verification is disabled
+    if not verify_ssl:
+        http_client = httpx.Client(verify=False)
+        http_async_client = httpx.AsyncClient(verify=False)
+        merged_conf["http_client"] = http_client
+        merged_conf["http_async_client"] = http_async_client
+
+    provider = str(merged_conf.pop("provider", "")).strip().lower()
+    model_name = str(merged_conf.get("model", "")).lower()
+    base_url = str(merged_conf.get("base_url", ""))
+    requests_per_minute = merged_conf.pop("requests_per_minute", None)
+    if requests_per_minute is not None:
+        requests_per_minute = float(requests_per_minute)
+        if requests_per_minute <= 0:
+            raise ValueError("requests_per_minute must be greater than zero")
+        limiter_key = (base_url.rstrip("/"), requests_per_minute)
+        if limiter_key not in _rate_limiter_cache:
+            _rate_limiter_cache[limiter_key] = InMemoryRateLimiter(
+                requests_per_second=requests_per_minute / 60.0,
+                check_every_n_seconds=min(0.1, 30.0 / requests_per_minute),
+                max_bucket_size=1,
+            )
+        merged_conf["rate_limiter"] = _rate_limiter_cache[limiter_key]
+
+    if (
+        provider == "azure"
+        or "azure_endpoint" in merged_conf
+        or os.getenv("AZURE_OPENAI_ENDPOINT")
+    ):
+        return AzureChatOpenAI(**merged_conf)
+
+    def configure_qwen_thinking(enabled: bool) -> None:
+        """Set both DashScope and vLLM/Qwen-compatible thinking controls."""
+        extra_body = dict(merged_conf.get("extra_body") or {})
+        extra_body["enable_thinking"] = enabled
+        chat_template_kwargs = dict(extra_body.get("chat_template_kwargs") or {})
+        chat_template_kwargs["enable_thinking"] = enabled
+        extra_body["chat_template_kwargs"] = chat_template_kwargs
+        merged_conf["extra_body"] = extra_body
+
+    is_qwen = provider in {"dashscope", "qwen"} or (
+        not provider and ("dashscope." in base_url or "qwen" in model_name)
+    )
+    is_deepseek = provider == "deepseek" or (not provider and "deepseek" in model_name)
+
+    if is_qwen:
+        configure_qwen_thinking(llm_type == "reasoning")
+        return ChatDashscope(**merged_conf)
+
+    # Private/IP endpoints are transport locations, not provider signals.
+    # DeepSeek models served by an OpenAI-compatible endpoint use ChatOpenAI;
+    # the official reasoning path keeps the native ChatDeepSeek integration.
+    if llm_type == "reasoning" and is_deepseek and not is_private_or_ip_url(base_url):
+        merged_conf["api_base"] = merged_conf.pop("base_url", None)
+        return ChatDeepSeek(**merged_conf)
+    return ChatOpenAI(**merged_conf)
+
+
+def get_llm_by_type(llm_type: LLMType) -> BaseChatModel:
+    """
+    Get LLM instance by type. Returns cached instance if available.
+    """
+    if llm_type in _llm_cache:
+        return _llm_cache[llm_type]
+
+    conf = load_yaml_config(_get_config_file_path())
+    llm = _create_llm_use_conf(llm_type, conf)
+    _llm_cache[llm_type] = llm
+    return llm
+
+
+def get_configured_llm_models() -> dict[str, list[str]]:
+    """
+    Get all configured LLM models grouped by type.
+
+    Returns:
+        Dictionary mapping LLM type to list of configured model names.
+    """
+    try:
+        conf = load_yaml_config(_get_config_file_path())
+        llm_type_config_keys = _get_llm_type_config_keys()
+
+        configured_models: dict[str, list[str]] = {}
+
+        for llm_type in get_args(LLMType):
+            # Get configuration from YAML file
+            config_key = llm_type_config_keys.get(llm_type, "")
+            yaml_conf = conf.get(config_key, {}) if config_key else {}
+
+            # Get configuration from environment variables
+            env_conf = _get_env_llm_conf(llm_type)
+
+            # Merge configurations, with environment variables taking precedence
+            merged_conf = {**yaml_conf, **env_conf}
+
+            # Check if model is configured
+            model_name = merged_conf.get("model")
+            if model_name:
+                configured_models.setdefault(llm_type, []).append(model_name)
+
+        return configured_models
+
+    except Exception as e:
+        # Log error and return empty dict to avoid breaking the application
+        print(f"Warning: Failed to load LLM configuration: {e}")
+        return {}
+
+
+# In the future, we will use reasoning_llm and vl_llm for different purposes
+# reasoning_llm = get_llm_by_type("reasoning")
+# vl_llm = get_llm_by_type("vision")

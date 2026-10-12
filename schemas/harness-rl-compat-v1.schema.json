@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://githarness.dev/schemas/harness-rl-compat-v1.schema.json",
+  "title": "Harness-RL Compatibility Export v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "task_id", "domain", "source_turn", "git_agent_trajectory", "handoff", "execution", "evaluator_result", "export_digest"],
+  "properties": {
+    "schema_version": {"const": "harness-rl-compat-v1"},
+    "task_id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["math", "sql", "search", "research", "code"]},
+    "source_turn": {"type": "integer", "minimum": 0},
+    "git_agent_trajectory": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "handoff": {"type": "object"},
+    "execution": {"type": "object"},
+    "evaluator_result": {"type": ["object", "null"]},
+    "export_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

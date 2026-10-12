@@ -1,0 +1,11 @@
+task_id: example-stackplanner-math
+domain: math
+executor: stackplanner
+model: ../../configs/models/openai-compatible.yaml
+requirement_resolution:
+  max_steps: 4
+domain_runtime:
+  update_max_steps: 16
+turns:
+  - feedback: "A shop has 12 boxes with 8 pencils each. How many pencils are there?"
+  - feedback: "Correction: there are 10 pencils in each box; keep everything else unchanged."

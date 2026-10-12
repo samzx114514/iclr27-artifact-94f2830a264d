@@ -1,0 +1,13 @@
+task_id: example-stackplanner-code
+domain: code
+executor: stackplanner
+model: ../../configs/models/openai-compatible.yaml
+requirement_resolution:
+  max_steps: 4
+domain_runtime:
+  update_max_steps: 16
+  instance_id: replace__with-official-instance-id
+  stackplanner:
+    swe_max_steps: 40
+turns:
+  - feedback: "Replace this text with the public problem statement from the official task record."

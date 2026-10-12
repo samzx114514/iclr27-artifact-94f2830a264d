@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://githarness.dev/schemas/state0-v1.schema.json",
+  "title": "GitHarness State 0 v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state0_id",
+    "task_id",
+    "domain",
+    "resolved_requirement",
+    "requirement_digest",
+    "public_runtime_assets",
+    "initial_workspace",
+    "root_plan",
+    "root_work_state",
+    "artifact_path",
+    "artifact",
+    "root_trace",
+    "finalization_receipt",
+    "checkpoint_id",
+    "checkpoint_digest",
+    "workspace_digest",
+    "failure"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "state0_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["math", "sql", "search", "research", "code"]},
+    "resolved_requirement": {"type": "string", "minLength": 1},
+    "requirement_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "public_runtime_assets": {"type": "object"},
+    "initial_workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "metadata", "digest"],
+      "properties": {
+        "files": {"type": "object", "additionalProperties": {"type": "string"}},
+        "metadata": {"type": "object"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "root_plan": {"type": "object"},
+    "root_work_state": {"type": "object"},
+    "artifact_path": {"type": "string", "minLength": 1},
+    "artifact": {"type": "string"},
+    "root_trace": {"type": "array", "items": {"type": "object"}},
+    "finalization_receipt": {"type": "object"},
+    "checkpoint_id": {"type": "string", "minLength": 1},
+    "checkpoint_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "workspace_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "failure": {"type": "null"}
+  }
+}

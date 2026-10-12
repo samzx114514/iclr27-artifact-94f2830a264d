@@ -1,0 +1,13 @@
+task_id: replace-with-public-search-task-id
+domain: search
+executor: stackplanner
+model: ../models/openai-compatible.yaml
+domain_runtime:
+  backend: remote_browsecomp
+  base_url: ${BROWSECOMP_SEARCH_URL}
+  api_key_env: BROWSECOMP_API_KEY
+  top_k: 5
+  snippet_max_tokens: 512
+  timeout: 120
+turns:
+  - feedback: Replace this fixture with one turn from datasets/search/test/public_cases.jsonl.

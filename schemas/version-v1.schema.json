@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/githarness/version-v1.schema.json",
+  "title": "GitHarness accepted version v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version_id", "parent_version_id", "requirement", "source_turn", "active"],
+  "properties": {
+    "version_id": {"type": "string", "minLength": 1},
+    "parent_version_id": {"type": ["string", "null"]},
+    "requirement": {"type": "string", "minLength": 1},
+    "source_turn": {"type": "integer", "minimum": 0},
+    "active": {"type": "boolean"}
+  }
+}

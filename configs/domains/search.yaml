@@ -1,0 +1,16 @@
+domain: search
+
+# Reviewer/offline mode only. This is not the paper retrieval protocol.
+backend: local_jsonl
+corpus_format: jsonl
+required_public_fields: [docid, text]
+optional_public_fields: [title]
+top_k: 8
+
+# Paper mode (copy these keys into domain_runtime in a case config):
+# backend: remote_browsecomp
+# base_url: ${BROWSECOMP_SEARCH_URL}
+# api_key_env: BROWSECOMP_API_KEY
+# top_k: 5
+# snippet_max_tokens: 512  # paper appendix; see datasets/search/README.md
+# timeout: 120

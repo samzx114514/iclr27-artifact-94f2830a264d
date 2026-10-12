@@ -1,0 +1,78 @@
+{
+  "registry": "GitHarness frozen public datasets",
+  "schema_version": 1,
+  "splits": [
+    {
+      "domain": "math",
+      "public_path": "datasets/math/train/public_cases.jsonl",
+      "public_sha256": "00104ab27c546cb7ed069579b76ce988eea986a8013d3fef21fbc8dd33878431",
+      "rows": 100,
+      "split": "train",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "math",
+      "public_path": "datasets/math/validation/public_cases.jsonl",
+      "public_sha256": "899563472b002de09d074306f56ef818af02313a68287a7044b3d5f63e969a1e",
+      "rows": 100,
+      "split": "validation",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "math",
+      "public_path": "datasets/math/test/public_cases.jsonl",
+      "public_sha256": "dab3b7045d1f09bc442c03db6410154826280f54d5e05f4b13bf1232788af4c9",
+      "rows": 100,
+      "split": "test",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "sql",
+      "public_path": "datasets/sql/train/public_cases.jsonl",
+      "public_sha256": "0b597d91dadce874ca12e63895461ef40cf47395a22bd31392e986fc0bf87f15",
+      "rows": 100,
+      "split": "train",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "sql",
+      "public_path": "datasets/sql/validation/public_cases.jsonl",
+      "public_sha256": "a39836496f48020bd3b80cb0aecbe52d77d1c1c8b282db1a91d5b92e32ee2779",
+      "rows": 100,
+      "split": "validation",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "sql",
+      "public_path": "datasets/sql/test/public_cases.jsonl",
+      "public_sha256": "af89bf258fc9a3cab67fe681c583847c36e576af1e9e59874c297e1a587139b7",
+      "rows": 100,
+      "split": "test",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "search",
+      "public_path": "datasets/search/test/public_cases.jsonl",
+      "public_sha256": "505b1486a88b2e6334fe74fea538536b6a31a58d33edd7542920c40957e3c840",
+      "rows": 100,
+      "split": "test",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "research",
+      "public_path": "datasets/research/test/public_cases.jsonl",
+      "public_sha256": "f96bc710ab432400bad9b71abea65e083e1f6922323540191282f195a74426f6",
+      "rows": 100,
+      "split": "test",
+      "turns_per_case": 7
+    },
+    {
+      "domain": "code",
+      "public_path": "datasets/code/test/public_cases.jsonl",
+      "public_sha256": "fdd171a4ee6db940b0fb62bee5b8af1f5e68593735977f30439298426a317c1e",
+      "rows": 100,
+      "split": "test",
+      "turns_per_case": 7
+    }
+  ]
+}

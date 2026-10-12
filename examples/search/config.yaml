@@ -1,0 +1,12 @@
+task_id: example-search
+domain: search
+executor: stackplanner
+model: ../../configs/models/openai-compatible.yaml
+requirement_resolution:
+  max_steps: 4
+domain_runtime:
+  update_max_steps: 16
+  corpus: corpus.jsonl
+  top_k: 2
+turns:
+  - feedback: "In what year did the Blue Lantern Observatory open? Return only the year."

@@ -1,0 +1,7 @@
+model: deepseek-flash
+base_url: ${LLM_BASE_URL}
+api_key_env: LLM_API_KEY
+temperature: 0.0
+max_tokens: 4096
+timeout_seconds: 120
+tool_choice: auto

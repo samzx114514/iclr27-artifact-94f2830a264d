@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://githarness.dev/schemas/task-native-update-result-v1.schema.json",
+  "title": "Task-Native Update Agent Result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "finished", "artifact_path", "artifact", "modified_work_state", "trace", "failure", "result_digest"],
+  "properties": {
+    "schema_version": {"const": "task-native-update-result-v1"},
+    "finished": {"type": "boolean"},
+    "artifact_path": {"type": "string", "minLength": 1},
+    "artifact": {"type": "string"},
+    "modified_work_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "metadata", "digest"],
+      "properties": {
+        "files": {"type": "object", "additionalProperties": {"type": "string"}},
+        "metadata": {"type": "object"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "trace": {"type": "array", "items": {"type": "object"}},
+    "failure": {"type": ["object", "null"]},
+    "result_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/githarness/search-corpus-v1.schema.json",
+  "title": "GitHarness local Search corpus row v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["docid", "text"],
+  "properties": {
+    "docid": {"type": "string", "minLength": 1},
+    "title": {"type": "string"},
+    "text": {"type": "string", "minLength": 1}
+  }
+}

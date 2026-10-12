@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "benchmark": "BIRD-SQL",
+  "release_label": "dev_20230613",
+  "official_project": "https://bird-bench.github.io/",
+  "license": "CC BY-SA 4.0",
+  "bundle": {
+    "filename": "dev_databases.zip",
+    "bytes": 436442964,
+    "sha256": "16e5569658b5b3a2989b87fd3b699343434ab301ec5702450f21d1d0aef7d211"
+  },
+  "databases": {
+    "california_schools": {"bytes": 11116544, "sha256": "986817d793479801ed55133e55aa27e335422c0cd3866b54a3d6317b7c5f09c1"},
+    "card_games": {"bytes": 261820416, "sha256": "c98bdb57fe7474da798b407785544b9af0daaad5d61fd21e2a73309493bc1227"},
+    "codebase_community": {"bytes": 481419264, "sha256": "92101be6d2a9f6adceea59d38f6d1c556087f9eea1432432a21268cb1348036d"},
+    "debit_card_specializing": {"bytes": 34635776, "sha256": "b3d149ad05746dbbe5116e229e17e18f09c39db43cf117d9ef3441753608b691"},
+    "european_football_2": {"bytes": 597754880, "sha256": "e4d361dbeec6591a4b315877c0c481da05c8ff5a3d389b34d6e17b6f15bee4e0"},
+    "financial": {"bytes": 71294976, "sha256": "d15d89cdb068a202b6f2b99342af44dffc1d52545b39ceaf62efdc0ba570101e"},
+    "formula_1": {"bytes": 22360064, "sha256": "17185981cd747f6cdc374cb02a6096db3130e6ec2ddc582fe1686a28fb4c4c8a"},
+    "student_club": {"bytes": 2641920, "sha256": "6e6576986316a0582419fc99c58e4600c5a85675bb34f5c9621e389cb8cade43"},
+    "superhero": {"bytes": 237568, "sha256": "75e94a2c3236ee3bb2c01fb97a1c4b4c1c269bcefd4eab1d04be323d2d0825b1"},
+    "thrombosis_prediction": {"bytes": 7327744, "sha256": "e7e16d74b4731b4b8d33fdbe8c29cd5622620788ce8d1f335631f65fc7cf1db9"},
+    "toxicology": {"bytes": 2678784, "sha256": "f5fa7f21af1ad878ff8fef1b0582b8cb2d7ed63dbac65ff16d2ba05667650c5b"}
+  },
+  "distribution": {
+    "assets_committed_here": false,
+    "reason": "The SQLite databases are large external benchmark assets. Obtain the matching release under BIRD's terms and verify it against these digests."
+  }
+}

@@ -1,0 +1,5 @@
+domain: code
+workspace: swebench_docker
+network: none
+image_policy: local_only
+workdir: /testbed

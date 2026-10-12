@@ -1,0 +1,13 @@
+task_id: example-stackplanner-sql
+domain: sql
+executor: stackplanner
+model: ../../configs/models/openai-compatible.yaml
+requirement_resolution:
+  max_steps: 4
+domain_runtime:
+  update_max_steps: 16
+turns:
+  - feedback: >-
+      Given the SQLite schema CREATE TABLE books(title TEXT, year INTEGER),
+      return the titles of books published after 2020, ordered by title.
+  - feedback: "Correction: include books published in 2020 as well; keep the output column and ordering unchanged."

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "protocol": "githarness-search-browsecomp-plus",
+  "corpus": {
+    "repository": "Tevatron/browsecomp-plus-corpus",
+    "repository_type": "dataset",
+    "revision": "89e412cede7d9904f0e8b717aebd9b317c46dfdc",
+    "license": "MIT",
+    "expected_documents": 100195,
+    "required_fields": ["docid", "text", "url"]
+  },
+  "index": {
+    "repository": "Tevatron/browsecomp-plus-indexes",
+    "repository_type": "dataset",
+    "revision": "b3f37f70c33829eb09d04784a54277a31871fd63",
+    "subdirectory": "qwen3-embedding-8b",
+    "license": "MIT"
+  },
+  "embedding_model": {
+    "repository": "Qwen/Qwen3-Embedding-8B",
+    "repository_type": "model",
+    "revision": "1d8ad4ca9b3dd8059ad90a75d4983776a23d44af",
+    "license": "Apache-2.0",
+    "dimensions": 4096,
+    "pooling": "last_token",
+    "normalized": true,
+    "max_length": 8192,
+    "query_prefix": "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
+  },
+  "retrieval": {
+    "top_k": 5,
+    "max_queries_per_candidate": 4,
+    "snippet_max_tokens": 512
+  },
+  "distribution": {
+    "assets_committed_here": false,
+    "reason": "The corpus, index, and model are large external artifacts; download them under their upstream terms."
+  }
+}

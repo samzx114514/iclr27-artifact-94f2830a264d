@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/githarness/private-evaluation-v1.schema.json",
+  "title": "MTAgentBench private evaluation record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "domain", "verifier", "reference", "asset_bindings", "schema_version"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "domain": {"enum": ["math", "sql", "search", "research", "code"]},
+    "verifier": {"type": "string", "minLength": 1},
+    "reference": {"type": "object"},
+    "asset_bindings": {"type": "object"},
+    "schema_version": {"const": 1}
+  }
+}
